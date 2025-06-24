@@ -66,6 +66,11 @@
 
     <div class="container">
         <h2>Your Saved Notes -- </h2>
+
+      {% if newDocs is defined %}
+      No Notes to display
+      {% endif %}
+
          {% for item in newDocs %}
         <li><a href="{{ item.href }}">{{ item.note }}</a></li>
     {% endfor %}

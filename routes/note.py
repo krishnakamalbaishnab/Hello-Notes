@@ -16,10 +16,17 @@ async def read_item(request: Request):
     for doc in docs:
         newDocs.append({
             "id": doc["_id"],
-            "note": doc["note"]
+            "title": doc["title"],
+            "desc": doc["description"],
+            "important": doc["important"]
         })
     return templates.TemplateResponse("index.html", {"request": request, "newDocs": newDocs})
 
-@note.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):  # Fixed here
-    return {"item_id": item_id, "q": q}
+
+
+
+@note.post("/", response_class=HTMLResponse)
+async def create_item(request :Request):
+    form = await request.form()
+    note = connection.hellonotes.notes.insert_one(dict(form))
+    return {"Success":True}
