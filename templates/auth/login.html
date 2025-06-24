@@ -34,6 +34,13 @@
                         </div>
                         {% endif %}
                         
+                        {% if verified %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i>Email verified successfully! You can now log in.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+                        
                         <form method="post">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>

@@ -17,6 +17,9 @@ class User(UserBase):
     id: Optional[str] = None
     created_at: Optional[datetime] = None
     is_active: bool = True
+    is_verified: bool = False
 
 class UserInDB(User):
-    hashed_password: str 
+    hashed_password: str
+    verification_code: Optional[str] = None
+    verification_code_expires: Optional[datetime] = None 

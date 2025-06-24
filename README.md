@@ -6,6 +6,7 @@ A modern, distraction-free note-taking web application built with FastAPI, Mongo
 
 ### ✅ Core Features
 - **User Authentication**: Secure JWT-based authentication with registration and login
+- **Email Verification**: 6-digit code verification system for account security
 - **Rich Note Creation**: Create notes with titles, content, tags, and markdown formatting
 - **Folder Organization**: Organize notes into color-coded folders
 - **To-Do Integration**: Add task lists directly within notes
@@ -64,7 +65,19 @@ A modern, distraction-free note-taking web application built with FastAPI, Mongo
    ALGORITHM=HS256
    ACCESS_TOKEN_EXPIRE_MINUTES=30
    DATABASE_NAME=hellonotes
+   
+   # Email Configuration (for Gmail)
+   MAIL_USERNAME=your-email@gmail.com
+   MAIL_PASSWORD=your-app-password
+   MAIL_FROM=your-email@gmail.com
    ```
+
+   **Email Setup Instructions:**
+   - For Gmail, you need to:
+     1. Enable 2-factor authentication on your Google account
+     2. Generate an App Password (not your regular password)
+     3. Use the App Password in `MAIL_PASSWORD`
+   - For other email providers, check their SMTP settings
 
 4. **Run the application**
    ```bash

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Email - HelloNotes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-envelope-check me-2"></i>Verify Your Email
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                
+                {% if success %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>{{ success }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                
+                <div class="text-center mb-4">
+                    <i class="bi bi-envelope-check text-primary" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Check Your Email</h4>
+                    <p class="text-muted">
+                        We've sent a 6-digit verification code to:<br>
+                        <strong>{{ email }}</strong>
+                    </p>
+                    <p class="text-muted small">
+                        The code will expire in 10 minutes.
+                    </p>
+                </div>
+                
+                <form method="post" action="/verify-email">
+                    <input type="hidden" name="email" value="{{ email }}">
+                    
+                    <div class="mb-3">
+                        <label for="verification_code" class="form-label">Verification Code</label>
+                        <input type="text" 
+                               class="form-control form-control-lg text-center" 
+                               id="verification_code" 
+                               name="verification_code" 
+                               maxlength="6" 
+                               pattern="[0-9]{6}"
+                               placeholder="000000"
+                               required
+                               style="letter-spacing: 8px; font-size: 1.5rem; font-weight: bold;">
+                        <div class="form-text">Enter the 6-digit code from your email</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle me-2"></i>Verify Email
+                        </button>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="text-muted mb-2">Didn't receive the code?</p>
+                    <form method="post" action="/resend-verification" class="d-inline">
+                        <input type="hidden" name="email" value="{{ email }}">
+                        <button type="submit" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Resend Code
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="/login" class="text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-focus on verification code input
+document.getElementById('verification_code').focus();
+
+// Auto-format the verification code input
+document.getElementById('verification_code').addEventListener('input', function(e) {
+    // Remove any non-digit characters
+    this.value = this.value.replace(/\D/g, '');
+    
+    // Limit to 6 digits
+    if (this.value.length > 6) {
+        this.value = this.value.slice(0, 6);
+    }
+});
+</script>
+{% endblock %} 

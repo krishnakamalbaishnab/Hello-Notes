@@ -76,7 +76,7 @@ async def new_note_page(request: Request):
         "folders": folders
     })
 
-@note.post("/notes", response_class=HTMLResponse)
+@note.post("/notes/create", response_class=HTMLResponse)
 async def create_note(request: Request):
     try:
         user_id = get_user_from_token(request)

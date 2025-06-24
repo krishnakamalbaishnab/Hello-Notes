@@ -46,7 +46,7 @@ async def new_folder_page(request: Request):
     
     return templates.TemplateResponse("folders/new.html", {"request": request})
 
-@folder.post("/folders", response_class=HTMLResponse)
+@folder.post("/folders/create", response_class=HTMLResponse)
 async def create_folder(request: Request):
     try:
         user_id = get_user_from_token(request)
