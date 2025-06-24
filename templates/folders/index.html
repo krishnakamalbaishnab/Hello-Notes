@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Folders - HelloNotes{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">Your Folders</h2>
+                <p class="text-muted mb-0">Organize your notes into folders</p>
+            </div>
+            <a href="/folders/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>New Folder
+            </a>
+        </div>
+
+        {% if folders %}
+        <div class="row">
+            {% for folder in folders %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-folder fs-1 me-3" style="color: {{ folder.color }}"></i>
+                                <div>
+                                    <h5 class="card-title mb-1">{{ folder.name }}</h5>
+                                    <small class="text-muted">{{ folder.note_count }} notes</small>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/folders/{{ folder._id }}">
+                                        <i class="bi bi-eye me-2"></i>View
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="/folders/{{ folder._id }}/edit">
+                                        <i class="bi bi-pencil me-2"></i>Edit
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-danger" href="#" 
+                                          onclick="deleteFolder('{{ folder._id }}', '{{ folder.name }}')">
+                                        <i class="bi bi-trash me-2"></i>Delete
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        {% if folder.description %}
+                        <p class="card-text text-muted small">{{ folder.description }}</p>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-clock me-1"></i>
+                                {{ folder.created_at.strftime('%b %d, %Y') if folder.created_at else 'Recently' }}
+                            </small>
+                            <a href="/folders/{{ folder._id }}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="bi bi-folder text-muted" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="text-muted mb-3">No folders yet</h4>
+            <p class="text-muted mb-4">Create your first folder to start organizing your notes!</p>
+            <a href="/folders/new" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Create Your First Folder
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteFolderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Folder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "<span id="folderName"></span>"? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteFolderForm" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Delete Folder</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.hover-shadow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function deleteFolder(folderId, folderName) {
+    document.getElementById('folderName').textContent = folderName;
+    document.getElementById('deleteFolderForm').action = `/folders/${folderId}/delete`;
+    new bootstrap.Modal(document.getElementById('deleteFolderModal')).show();
+}
+</script>
+{% endblock %} 

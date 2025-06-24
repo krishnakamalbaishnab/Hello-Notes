@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Folder - HelloNotes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-pencil me-2"></i>Edit Folder
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Folder Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ folder.name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Describe what this folder is for...">{{ folder.description or '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="color" class="form-label">Folder Color</label>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="color" id="color-primary" value="#007bff" {% if folder.color == '#007bff' %}checked{% endif %}>
+                                <label class="form-check-label" for="color-primary">
+                                    <span class="badge bg-primary">Primary</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="color" id="color-success" value="#28a745" {% if folder.color == '#28a745' %}checked{% endif %}>
+                                <label class="form-check-label" for="color-success">
+                                    <span class="badge bg-success">Success</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="color" id="color-warning" value="#ffc107" {% if folder.color == '#ffc107' %}checked{% endif %}>
+                                <label class="form-check-label" for="color-warning">
+                                    <span class="badge bg-warning">Warning</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="color" id="color-danger" value="#dc3545" {% if folder.color == '#dc3545' %}checked{% endif %}>
+                                <label class="form-check-label" for="color-danger">
+                                    <span class="badge bg-danger">Danger</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="color" id="color-info" value="#17a2b8" {% if folder.color == '#17a2b8' %}checked{% endif %}>
+                                <label class="form-check-label" for="color-info">
+                                    <span class="badge bg-info">Info</span>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="color" id="color-secondary" value="#6c757d" {% if folder.color == '#6c757d' %}checked{% endif %}>
+                                <label class="form-check-label" for="color-secondary">
+                                    <span class="badge bg-secondary">Secondary</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Update Folder
+                        </button>
+                        <a href="/folders/{{ folder._id }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

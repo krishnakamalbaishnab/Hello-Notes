@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}{{ note.title }} - HelloNotes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-journal-text me-2"></i>{{ note.title }}
+                </h5>
+                <div class="btn-group btn-group-sm">
+                    <a href="/notes/{{ note._id }}/edit" class="btn btn-light">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <!-- Note Meta -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            Created: {{ note.created_at.strftime('%B %d, %Y at %I:%M %p') if note.created_at else 'Unknown' }}
+                        </small>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <small class="text-muted">
+                            <i class="bi bi-pencil-square me-1"></i>
+                            Updated: {{ note.updated_at.strftime('%B %d, %Y at %I:%M %p') if note.updated_at else 'Unknown' }}
+                        </small>
+                    </div>
+                </div>
+                
+                <!-- Tags -->
+                {% if note.tags %}
+                <div class="mb-3">
+                    {% for tag in note.tags %}
+                    <span class="badge bg-secondary me-1">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Important Badge -->
+                {% if note.is_important %}
+                <div class="mb-3">
+                    <span class="badge bg-warning">
+                        <i class="bi bi-star-fill me-1"></i>Important
+                    </span>
+                </div>
+                {% endif %}
+                
+                <!-- Content -->
+                <div class="mb-4">
+                    <h6 class="text-muted mb-2">Content</h6>
+                    <div class="border rounded p-3 bg-light">
+                        {{ note.content|replace('\n', '<br>')|safe }}
+                    </div>
+                </div>
+                
+                <!-- Todos -->
+                {% if note.todos %}
+                <div class="mb-4">
+                    <h6 class="text-muted mb-2">To-Do Items</h6>
+                    <div class="list-group">
+                        {% for todo in note.todos %}
+                        <div class="list-group-item d-flex align-items-center">
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="checkbox" 
+                                       {% if todo.completed %}checked{% endif %}
+                                       onchange="toggleTodo('{{ note._id }}', '{{ todo.id }}', this.checked)">
+                            </div>
+                            <span class="{% if todo.completed %}text-decoration-line-through text-muted{% endif %}">
+                                {{ todo.text }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Images -->
+                {% if note.images %}
+                <div class="mb-4">
+                    <h6 class="text-muted mb-2">Images</h6>
+                    <div class="row">
+                        {% for image in note.images %}
+                        <div class="col-md-4 mb-2">
+                            <img src="{{ image }}" class="img-fluid rounded" alt="Note image">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Links -->
+                {% if note.links %}
+                <div class="mb-4">
+                    <h6 class="text-muted mb-2">Links</h6>
+                    <div class="list-group">
+                        {% for link in note.links %}
+                        <a href="{{ link }}" class="list-group-item list-group-item-action" target="_blank">
+                            <i class="bi bi-link-45deg me-2"></i>{{ link }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Actions -->
+                <div class="d-flex gap-2">
+                    <a href="/notes/{{ note._id }}/edit" class="btn btn-primary">
+                        <i class="bi bi-pencil me-2"></i>Edit Note
+                    </a>
+                    <form method="post" action="/notes/{{ note._id }}/toggle-important" class="d-inline">
+                        <button type="submit" class="btn btn-outline-warning">
+                            <i class="bi bi-star{% if note.is_important %}-fill{% endif %} me-2"></i>
+                            {% if note.is_important %}Remove Important{% else %}Mark Important{% endif %}
+                        </button>
+                    </form>
+                    <a href="/dashboard" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "{{ note.title }}"? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="/notes/{{ note._id }}/delete" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Delete Note</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleTodo(noteId, todoId, completed) {
+    // This would typically make an AJAX call to update the todo status
+    // For now, we'll just show a visual change
+    const todoText = event.target.closest('.list-group-item').querySelector('span');
+    if (completed) {
+        todoText.classList.add('text-decoration-line-through', 'text-muted');
+    } else {
+        todoText.classList.remove('text-decoration-line-through', 'text-muted');
+    }
+}
+</script>
+{% endblock %} 

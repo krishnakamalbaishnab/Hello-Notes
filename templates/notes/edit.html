@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Note - HelloNotes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-pencil me-2"></i>Edit Note
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Note Title</label>
+                                <input type="text" class="form-control" id="title" name="title" value="{{ note.title }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="folder_id" class="form-label">Folder</label>
+                                <select class="form-select" id="folder_id" name="folder_id">
+                                    <option value="">No Folder</option>
+                                    {% for folder in folders %}
+                                    <option value="{{ folder._id }}" {% if note.folder_id == folder._id|string %}selected{% endif %}>
+                                        {{ folder.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content</label>
+                        <div class="border rounded p-2 mb-2">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-secondary" onclick="formatText('bold')">
+                                    <i class="bi bi-type-bold"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="formatText('italic')">
+                                    <i class="bi bi-type-italic"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="formatText('underline')">
+                                    <i class="bi bi-type-underline"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="addLink()">
+                                    <i class="bi bi-link-45deg"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea class="form-control" id="content" name="content" rows="10" placeholder="Write your note content here...">{{ note.content }}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="tags" class="form-label">Tags (comma-separated)</label>
+                                <input type="text" class="form-control" id="tags" name="tags" value="{{ note.tags|join(', ') }}" placeholder="study, math, important">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check mt-4">
+                                    <input class="form-check-input" type="checkbox" id="is_important" name="is_important" {% if note.is_important %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_important">
+                                        <i class="bi bi-star text-warning me-1"></i>Mark as Important
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Todo Section -->
+                    <div class="mb-4">
+                        <label class="form-label">To-Do Items</label>
+                        <div id="todo-container">
+                            {% if note.todos %}
+                                {% for todo in note.todos %}
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-check2-square"></i>
+                                    </span>
+                                    <input type="text" class="form-control" name="todo_text" value="{{ todo.text }}" placeholder="Add a to-do item...">
+                                    <button type="button" class="btn btn-outline-danger" onclick="removeTodoField(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-check2-square"></i>
+                                    </span>
+                                    <input type="text" class="form-control" name="todo_text" placeholder="Add a to-do item...">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="addTodoField()">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Update Note
+                        </button>
+                        <a href="/notes/{{ note._id }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let todoCount = 1;
+
+function addTodoField() {
+    todoCount++;
+    const container = document.getElementById('todo-container');
+    const newField = document.createElement('div');
+    newField.className = 'input-group mb-2';
+    newField.innerHTML = `
+        <span class="input-group-text">
+            <i class="bi bi-check2-square"></i>
+        </span>
+        <input type="text" class="form-control" name="todo_text" placeholder="Add a to-do item...">
+        <button type="button" class="btn btn-outline-danger" onclick="removeTodoField(this)">
+            <i class="bi bi-trash"></i>
+        </button>
+    `;
+    container.appendChild(newField);
+}
+
+function removeTodoField(button) {
+    button.parentElement.remove();
+}
+
+function formatText(command) {
+    const textarea = document.getElementById('content');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    
+    let formattedText = '';
+    switch(command) {
+        case 'bold':
+            formattedText = `**${selectedText}**`;
+            break;
+        case 'italic':
+            formattedText = `*${selectedText}*`;
+            break;
+        case 'underline':
+            formattedText = `__${selectedText}__`;
+            break;
+    }
+    
+    textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+    textarea.focus();
+    textarea.setSelectionRange(start + 2, start + 2 + selectedText.length);
+}
+
+function addLink() {
+    const url = prompt('Enter URL:');
+    if (url) {
+        const text = prompt('Enter link text:', url);
+        if (text) {
+            const textarea = document.getElementById('content');
+            const start = textarea.selectionStart;
+            const linkText = `[${text}](${url})`;
+            textarea.value = textarea.value.substring(0, start) + linkText + textarea.value.substring(start);
+            textarea.focus();
+        }
+    }
+}
+</script>
+{% endblock %} 

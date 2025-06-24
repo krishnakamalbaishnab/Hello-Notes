@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}HelloNotes - Student Note-Taking Made Simple{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row align-items-center min-vh-75">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">
+                Organize Your Academic Life with 
+                <span class="text-primary">HelloNotes</span>
+            </h1>
+            <p class="lead mb-4">
+                A distraction-free, student-focused note-taking app that helps you stay organized, 
+                track your progress, and ace your studies.
+            </p>
+            <div class="d-flex gap-3">
+                <a href="/auth/register" class="btn btn-primary btn-lg">
+                    <i class="bi bi-person-plus me-2"></i>Get Started Free
+                </a>
+                <a href="/auth/login" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6 text-center">
+            <div class="position-relative">
+                <div class="card shadow-lg border-0" style="transform: rotate(3deg);">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-primary">
+                            <i class="bi bi-journal-text me-2"></i>Study Notes
+                        </h5>
+                        <p class="card-text">
+                            📚 Advanced Mathematics<br>
+                            • Calculus derivatives<br>
+                            • Integration techniques<br>
+                            • Practice problems
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-success">Important</span>
+                            <small class="text-muted">2 hours ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row py-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="fw-bold">Why Students Love HelloNotes</h2>
+            <p class="lead text-muted">Everything you need to stay organized and productive</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="bi bi-folder text-primary fs-1"></i>
+                    </div>
+                    <h5 class="card-title">Smart Organization</h5>
+                    <p class="card-text text-muted">
+                        Create folders to organize your notes by subject, semester, or project. 
+                        Keep everything tidy and easy to find.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="bi bi-check2-square text-success fs-1"></i>
+                    </div>
+                    <h5 class="card-title">To-Do Integration</h5>
+                    <p class="card-text text-muted">
+                        Add task lists directly in your notes. Track assignments, 
+                        deadlines, and study goals all in one place.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="bi bi-star text-warning fs-1"></i>
+                    </div>
+                    <h5 class="card-title">Important Notes</h5>
+                    <p class="card-text text-muted">
+                        Mark crucial notes as important for quick access. 
+                        Never lose track of essential information again.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row py-5">
+        <div class="col-12 text-center">
+            <div class="bg-primary bg-opacity-10 rounded-3 p-5">
+                <h3 class="fw-bold mb-3">Ready to Transform Your Note-Taking?</h3>
+                <p class="lead mb-4">Join thousands of students who are already using HelloNotes to stay organized and productive.</p>
+                <a href="/auth/register" class="btn btn-primary btn-lg">
+                    <i class="bi bi-rocket me-2"></i>Start Your Free Account
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
