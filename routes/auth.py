@@ -70,7 +70,7 @@ async def register(request: Request):
     
     if email_sent:
         # Redirect to verification page
-        response = RedirectResponse(url=f"/verify-email?email={email}", status_code=status.HTTP_302_FOUND)
+        response = RedirectResponse(url=f"/auth/verify-email?email={email}", status_code=status.HTTP_302_FOUND)
         return response
     else:
         # If email fails, delete the user and show error

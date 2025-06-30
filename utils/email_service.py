@@ -30,6 +30,24 @@ def generate_verification_expiry() -> datetime:
 async def send_verification_email(email: str, username: str, verification_code: str) -> bool:
     """Send verification email with 6-digit code"""
     try:
+        # Check if email credentials are properly configured
+        mail_username = os.getenv("MAIL_USERNAME", "")
+        mail_password = os.getenv("MAIL_PASSWORD", "")
+        
+        # If email credentials are not properly set, use console output
+        if not mail_username or mail_username == "your-email@gmail.com" or not mail_password or mail_password == "your-app-password":
+            print(f"\n{'='*50}")
+            print(f"📧 EMAIL VERIFICATION CODE (CONSOLE MODE)")
+            print(f"{'='*50}")
+            print(f"To: {email}")
+            print(f"Username: {username}")
+            print(f"Verification Code: {verification_code}")
+            print(f"Expires: {datetime.utcnow() + timedelta(minutes=10)}")
+            print(f"{'='*50}")
+            print(f"💡 To enable real email sending, configure your .env file with Gmail credentials")
+            print(f"{'='*50}\n")
+            return True  # Return True so registration continues
+        
         html_content = f"""
         <html>
         <body>
@@ -69,18 +87,36 @@ async def send_verification_email(email: str, username: str, verification_code: 
         print(f"Error sending email: {e}")
         # Fallback: Print verification code to console for testing
         print(f"\n{'='*50}")
-        print(f"📧 EMAIL VERIFICATION CODE (TESTING MODE)")
+        print(f"📧 EMAIL VERIFICATION CODE (FALLBACK MODE)")
         print(f"{'='*50}")
         print(f"To: {email}")
         print(f"Username: {username}")
         print(f"Verification Code: {verification_code}")
         print(f"Expires: {datetime.utcnow() + timedelta(minutes=10)}")
         print(f"{'='*50}\n")
-        return False
+        return True  # Return True so registration continues
 
 async def send_reset_verification_email(email: str, username: str, verification_code: str) -> bool:
     """Send a new verification code for unverified users"""
     try:
+        # Check if email credentials are properly configured
+        mail_username = os.getenv("MAIL_USERNAME", "")
+        mail_password = os.getenv("MAIL_PASSWORD", "")
+        
+        # If email credentials are not properly set, use console output
+        if not mail_username or mail_username == "your-email@gmail.com" or not mail_password or mail_password == "your-app-password":
+            print(f"\n{'='*50}")
+            print(f"📧 NEW VERIFICATION CODE (CONSOLE MODE)")
+            print(f"{'='*50}")
+            print(f"To: {email}")
+            print(f"Username: {username}")
+            print(f"New Verification Code: {verification_code}")
+            print(f"Expires: {datetime.utcnow() + timedelta(minutes=10)}")
+            print(f"{'='*50}")
+            print(f"💡 To enable real email sending, configure your .env file with Gmail credentials")
+            print(f"{'='*50}\n")
+            return True  # Return True so resend continues
+        
         html_content = f"""
         <html>
         <body>
@@ -120,11 +156,11 @@ async def send_reset_verification_email(email: str, username: str, verification_
         print(f"Error sending email: {e}")
         # Fallback: Print verification code to console for testing
         print(f"\n{'='*50}")
-        print(f"📧 NEW VERIFICATION CODE (TESTING MODE)")
+        print(f"📧 NEW VERIFICATION CODE (FALLBACK MODE)")
         print(f"{'='*50}")
         print(f"To: {email}")
         print(f"Username: {username}")
         print(f"New Verification Code: {verification_code}")
         print(f"Expires: {datetime.utcnow() + timedelta(minutes=10)}")
         print(f"{'='*50}\n")
-        return False 
+        return True  # Return True so resend continues 

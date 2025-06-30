@@ -38,7 +38,7 @@
                     </p>
                 </div>
                 
-                <form method="post" action="/verify-email">
+                <form method="post" action="/auth/verify-email">
                     <input type="hidden" name="email" value="{{ email }}">
                     
                     <div class="mb-3">
@@ -66,7 +66,7 @@
                 
                 <div class="text-center">
                     <p class="text-muted mb-2">Didn't receive the code?</p>
-                    <form method="post" action="/resend-verification" class="d-inline">
+                    <form method="post" action="/auth/resend-verification" class="d-inline">
                         <input type="hidden" name="email" value="{{ email }}">
                         <button type="submit" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-clockwise me-2"></i>Resend Code
