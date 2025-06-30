@@ -45,6 +45,11 @@ async def login_redirect(request: Request):
 async def register_redirect(request: Request):
     return RedirectResponse(url="/auth/register", status_code=302)
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Docker and load balancers"""
+    return {"status": "healthy", "service": "HelloNotes"}
+
 
 
 

@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  hellonotes:
+    build: .
+    container_name: hellonotes-app
+    restart: unless-stopped
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_FROM=${MAIL_FROM}
+    volumes:
+      - hellonotes_uploads:/app/static/uploads
+    networks:
+      - hellonotes-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    image: nginx:alpine
+    container_name: hellonotes-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf
+      - hellonotes_uploads:/var/www/hellonotes/static/uploads:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - hellonotes
+    restart: unless-stopped
+    networks:
+      - hellonotes-network
+
+volumes:
+  hellonotes_uploads:
+
+networks:
+  hellonotes-network:
+    driver: bridge 
